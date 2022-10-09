@@ -34,7 +34,7 @@ from pyneng_cli_course.utils import (
 
 def exception_handler(exception_type, exception, traceback):
     """
-    sys.excepthook для отключения traceback по умолчанию
+    sys.excepthook to disable traceback by default
     """
     print(f"\n{exception_type.__name__}: {exception}\n")
 
@@ -90,11 +90,11 @@ def _get_tasks_tests_from_cli(self, value):
 
 class CustomTasksType(click.ParamType):
     """
-    Класс создает новый тип для click и преобразует
-    допустимые варианты строк заданий в отдельные файлы тестов.
+    The class creates a new type for click and converts valid task string
+    options into separate test files.
 
-    Кроме того проверяет есть ли такой файл в текущем каталоге
-    и оставляет только те, что есть.
+    In addition, it checks whether there is such a file in the current
+    directory and leaves only those that are.
     """
 
     name = "CustomTasksType"
@@ -137,8 +137,8 @@ class CustomChapterType(click.ParamType):
             else:
                 self.fail(
                     red(
-                        f"Данный формат не поддерживается {chapter}. "
-                        "Допустимые форматы в pyneng --help"
+                        f"This format is not supported {chapter}. "
+                        "Valid formats in pyneng --help"
                     )
                 )
         return sorted(chapter_dir_list)
@@ -162,38 +162,36 @@ def print_docs_with_pager(width=90):
     "-a",
     is_flag=True,
     help=(
-        "Скопировать ответы для заданий, которые прошли тесты. При добавлении этого "
-        "флага, не выводится traceback для тестов."
+        "Copy answers for tasks that passed the tests. When this flag is added,"
+        "no traceback is output for tests."
     ),
 )
-@click.option("--docs", is_flag=True, help="Показать документацию pyneng")
+@click.option("--docs", is_flag=True, help="Show pyneng documentation")
 @click.option(
     "--save-all",
     "save_all_to_github",
     is_flag=True,
-    help="Сохранить на GitHub все измененные файлы в текущем каталоге",
+    help="Save to GitHub all modified files in the current directory",
 )
 @click.option(
-    "--update", "update_tasks_tests", is_flag=True, help="Обновить задания и тесты"
+    "--update", "update_tasks_tests", is_flag=True, help="Update tasks and tests"
 )
 @click.option(
-    "--test-only", "update_tests_only", is_flag=True, help="Обновить только тесты"
+    "--test-only", "update_tests_only", is_flag=True, help="Update tests only"
 )
 @click.option(
     "--update-chapters",
     type=CustomChapterType(),
-    help="Обновить все задания и тесты в указанных разделах",
+    help="Update all tasks and tests in the specified chapters",
 )
-@click.option(
-    "--disable-verbose", "-d", is_flag=True, help="Отключить подробный вывод pytest"
-)
-@click.option("--debug", is_flag=True, help="Показывать traceback исключений")
+@click.option("--disable-verbose", "-d", is_flag=True, help="Disable verbose output")
+@click.option("--debug", is_flag=True, help="Show exception traceback")
 @click.option("--default-branch", "-b", default="main")
 @click.option(
     "--all",
     "git_add_all_to_github",
     is_flag=True,
-    help="Добавить git add .",
+    help="Add git add .",
 )
 @click.option("--ignore-ssl-cert", default=False)
 @click.version_option(version="3.1.3")
@@ -212,30 +210,29 @@ def cli(
     docs,
 ):
     """
-    Запустить тесты для заданий TASKS. По умолчанию запустятся все тесты.
+    Run tests for TASKS tasks. By default, all tests will run.
 
     \b
-    Эти флаги не запускают тестирование заданий
-     pyneng --docs                 Показать документацию pyneng
-     pyneng --test-token           Проверить работу токена
-     pyneng --save-all             Сохранить на GitHub все измененные файлы в текущем каталоге
-     pyneng --update               Обновить все задания и тесты в текущем каталоге
-     pyneng --update --test-only   Обновить только тесты в текущем каталоге
-     pyneng 1,2 --update           Обновить задания 1 и 2 и соответствующие тесты в текущем каталоге
-     pyneng --update-chapters 4-5  Обновить разделы 4 и 5 (каталоги будут удалены и скопированы обновленные версии)
+    These options do not run tests
+     pyneng --docs                 Show pyneng documentation
+     pyneng --save-all             Save to GitHub all modified files in the current directory
+     pyneng --update               Update all tasks and tests in the current directory
+     pyneng --update --test-only   Update only tests in the current directory
+     pyneng 1,2 --update           Update tasks 1 and 2 and corresponding tests in current directory
+     pyneng --update-chapters 4-5  Update chapters 4 and 5 (directories will be removed and updated versions copied)
 
     \b
-    Запуск тестирования заданий, просмотр ответов, сдача на проверку
+    Run tests, view answers
     \b
-        pyneng              запустить все тесты для текущего раздела
-        pyneng 1,2a,5       запустить тесты для заданий 1, 2a и 5
-        pyneng 1,2*         запустить тесты для заданий 1, все задания 2 с буквами и без
-        pyneng 1,3-5        запустить тесты для заданий 1, 3, 4, 5
-        pyneng 1-5 -a       запустить тесты и записать ответы на задания,
-                            которые прошли тесты, в файлы answer_task_x.py
+         pyneng             run all tests for current chapter
+         pyneng 1,2a,5      run tests for tasks 1, 2a and 5
+         pyneng 1,2*        run tests for tasks 1, all tasks 2 with and without letters
+         pyneng 1,3-5       run tests for tasks 1, 3, 4, 5
+         pyneng 1-5 -a      run the tests and write the answers for the tasks
+                            that passed the tests to the files answer_task_x.py
 
     \b
-    Подробнее в документации: pyneng --docs
+    Read more in the documentation: pyneng --docs
     """
     global DEFAULT_BRANCH
     if default_branch != "main":
@@ -247,31 +244,30 @@ def cli(
 
     if save_all_to_github:
         save_changes_to_github(branch=DEFAULT_BRANCH)
-        print(green("Все изменения в текущем каталоге сохранены на GitHub"))
+        print(green("All changes in the current directory are saved to GitHub"))
         raise click.Abort()
 
     if update_chapters:
         check_current_dir_name(
-            ["exercises"], "Обновление разделов надо выполнять из каталога"
+            ["exercises"], "Chapters must be updated from the directory"
         )
         update_chapters_tasks_and_tests(update_chapters, branch=DEFAULT_BRANCH)
         raise click.Abort()
 
-    # дальнейшее есть смысл выполнять только если мы находимся в каталоге
-    # конкретного раздела с заданиями
+    # it makes sense to perform further actions only if we are in the directory
+    # of a specific task chapter
     check_current_dir_name(
-        TASK_DIRS + DB_TASK_DIRS, "Проверку заданий можно выполнять только из каталогов"
+        TASK_DIRS + DB_TASK_DIRS, "Tasks can only be tested from directories"
     )
 
-    # после обработки CustomTasksType, получаем три списка файлов
     test_files, tasks_without_tests, task_files = tasks
 
     if update_tasks_tests:
         if update_tests_only:
             tasks_files = None
-            msg = green("Тесты успешно обновлены")
+            msg = green("Tests updated successfully")
         else:
-            msg = green("Задания и тесты успешно обновлены")
+            msg = green("Tasks and tests updated successfully")
 
         upd = update_tasks_and_tests(task_files, test_files, branch=DEFAULT_BRANCH)
         if upd:
@@ -289,24 +285,24 @@ def cli(
     else:
         pytest_args = [*pytest_args_common, "-vv"]
 
-    # если добавлен флаг -a или -c нет смысла выводить traceback,
-    # так как скорее всего задания уже проверены предыдущими запусками.
+    # if the -a flag is added, it makes no sense to print traceback, since most
+    # likely the tasks have already been checked by previous runs.
     if answer or check:
         pytest_args = [*pytest_args_common, "--tb=no"]
 
-    # запуск pytest
+    # run pytest
     pytest.main(test_files + pytest_args, plugins=[json_plugin])
 
-    # получить результаты pytest в формате JSON
-    # passed_tasks это задания у которых есть тесты и тесты прошли
+    # get pytest results in JSON format passed_tasks are tasks that have tests
+    # and passed tests
     passed_tasks = parse_json_report(json_plugin.report)
 
     if passed_tasks or tasks_without_tests:
-        # скопировать ответы в файлы answer_task_x.py
+        # copy answers to answer_task_x.py files
         if answer:
             copy_answers(passed_tasks)
 
-    # если добавлен флаг --all, надо сохранить все изменения на github
+    # if the --all flag is added, all changes must be saved to github
     if git_add_all_to_github:
         save_changes_to_github(branch=DEFAULT_BRANCH)
 
