@@ -33,8 +33,8 @@ def green(msg):
 
 def remove_readonly(func, path, _):
     """
-    Вспомогательная функция для Windows, которая позволяет удалять
-    read only файлы из каталога .git
+    A helper function for Windows that allows you to remove read only files
+    from a .git directory
     """
     os.chmod(path, stat.S_IWRITE)
     func(path)
@@ -42,8 +42,8 @@ def remove_readonly(func, path, _):
 
 def call_command(command, verbose=True, return_stdout=False, return_stderr=False):
     """
-    Функция вызывает указанную command через subprocess
-    и выводит stdout и stderr, если флаг verbose=True.
+    The function invokes the specified command via subprocess and outputs
+    stdout and stderr if the verbose flag is True.
     """
     result = subprocess.run(
         command,
@@ -81,7 +81,7 @@ def show_git_diff_short():
 
 def git_push(branch):
     """
-    Функция вызывает git push для Windows
+    The function calls git push on Windows
     """
     command = f"git push origin {branch}"
     print("#" * 20, command)
@@ -89,7 +89,7 @@ def git_push(branch):
 
 
 def save_changes_to_github(
-    message="Все изменения сохранены", git_add_all=True, branch="main"
+    message="All changes saved", git_add_all=True, branch="main"
 ):
     status = call_command("git status -s", return_stdout=True)
     if not status:
@@ -107,7 +107,8 @@ def save_changes_to_github(
 
 def current_chapter_id():
     """
-    Функция возвращает номер текущего раздела, где вызывается pyneng.
+    The function returns the number of the current task chapter where pyneng is
+    called.
     """
     current_chapter_name = current_dir_name()
     if current_chapter_name in DB_TASK_DIRS:
@@ -124,8 +125,8 @@ def current_dir_name():
 
 def parse_json_report(report):
     """
-    Отбирает нужные части из отчета запуска pytest в формате JSON.
-    Возвращает список тестов, которые прошли.
+    Selects the desired parts from the pytest run report in JSON format.
+    Returns a list of tests that passed.
     """
     if report and report["summary"]["total"] != 0:
         all_tests = defaultdict(list)
@@ -151,17 +152,17 @@ def git_clone_repo(repo_url, dst_dir):
         if "could not resolve host" in stderr.lower():
             raise PynengError(
                 red(
-                    "Не получилось клонировать репозиторий. Возможно нет доступа в интернет?"
+                    "Failed to clone the repository. Maybe you don't have internet access?"
                 )
             )
         else:
-            raise PynengError(red(f"Не получилось скопировать файлы. {stderr}"))
+            raise PynengError(red(f"Failed to copy files. {stderr}"))
 
 
 def copy_answers(passed_tasks):
     """
-    Функция клонирует репозиторий с ответами и копирует ответы для заданий,
-    которые прошли тесты.
+    The function clones the answer repository and copies the answers for tasks
+    that pass the tests.
     """
     pth = str(pathlib.Path().absolute())
     current_chapter_name = os.path.split(pth)[-1]
@@ -176,8 +177,8 @@ def copy_answers(passed_tasks):
     copy_answer_files(passed_tasks, pth)
     print(
         green(
-            "\nОтветы на задания, которые прошли тесты "
-            "скопированы в файлы answer_task_x.py\n"
+            "\nAnswers to tasks that passed the tests are copied to the files "
+            "answer_task_x.py\n"
         )
     )
     os.chdir(homedir)
@@ -187,7 +188,7 @@ def copy_answers(passed_tasks):
 
 def copy_answer_files(passed_tasks, pth):
     """
-    Функция копирует ответы для указанных заданий.
+    The function copies the answers for the specified tasks.
     """
     for test_file in passed_tasks:
         task_name = test_file.replace("test_", "")
@@ -215,8 +216,8 @@ def clone_or_pull_task_repo():
 
 def copy_tasks_tests_from_repo(tasks, tests):
     """
-    Функция клонирует репозиторий с последней версией заданий и копирует указанные
-    задания в текущий каталог.
+    The function clones the repository with the latest version of tasks and
+    copies the specified tasks to the current directory.
     """
     source_pth = str(pathlib.Path().absolute())
     current_chapter_name = os.path.split(source_pth)[-1]
@@ -230,13 +231,13 @@ def copy_tasks_tests_from_repo(tasks, tests):
         os.path.join(homedir, course_tasks_repo_dir, "exercises", current_chapter_name)
     )
     copy_task_test_files(source_pth, tasks, tests)
-    print(green("\nОбновленные задания и тесты скопированы"))
+    print(green("\nUpdated tasks and tests copied"))
     os.chdir(source_pth)
 
 
 def copy_task_test_files(source_pth, tasks=None, tests=None):
     """
-    Функция копирует файлы заданий и тестов.
+    The function copies task and test files.
     """
     file_list = []
     if tasks:
@@ -251,46 +252,45 @@ def save_working_dir(branch="main"):
     if not working_dir_clean():
         print(
             red(
-                "Обновление тестов и заданий перезапишет содержимое несохраненных файлов!".upper()
+                "Updating tests and tasks will overwrite the contents of unsaved files!".upper()
             )
         )
         user_input = input(
             red(
-                "В текущем каталоге есть несохраненные изменения! "
-                "Хотите их сохранить? [y/n]: "
+                "There are unsaved changes in the current directory! "
+                "Do you want to save them? [y/n]: "
             )
         )
         if user_input.strip().lower() not in ("n", "no"):
             save_changes_to_github(
-                "Сохранение изменений перед обновлением заданий", branch=branch
+                "Saving changes before updating tasks", branch=branch
             )
             print(
                 green(
-                    "Все изменения в текущем каталоге сохранены. Начинаем обновление..."
+                    "All changes in the current directory are saved. Let's start updating..."
                 )
             )
 
 
 def working_dir_changed_diff(branch="main"):
-    print(red("Были обновлены такие файлы:"))
+    print(red("The following files have been updated:"))
     show_git_diff_short()
     print(
-        "\nЭто короткий diff, если вы хотите посмотреть все отличия подробно, "
-        "нажмите n и дайте команду git diff.\n"
-        "Также при желании можно отменить внесенные изменения git checkout -- file "
-        "(или git restore file)."
+        "\nThis is a short diff, if you want to see all the differences in detail, "
+        "press n and run git diff command.\nYou can also undo your changes with "
+        "git checkout -- file (or git restore file) if you want."
     )
 
-    user_input = input(red("\nСохранить изменения и добавить на github? [y/n]: "))
+    user_input = input(red("\nSave changes and add to github? [y/n]: "))
     if user_input.strip().lower() not in ("n", "no"):
-        save_changes_to_github("Обновление заданий", branch=branch)
+        save_changes_to_github("Updating tasks", branch=branch)
 
 
 def update_tasks_and_tests(tasks_list, tests_list, branch="main"):
     save_working_dir(branch=branch)
     copy_tasks_tests_from_repo(tasks_list, tests_list)
     if working_dir_clean():
-        print(green("Задания и тесты уже последней версии"))
+        print(green("Tasks and tests are already the latest version"))
         return False
     else:
         working_dir_changed_diff(branch=branch)
@@ -301,7 +301,7 @@ def update_chapters_tasks_and_tests(update_chapters, branch="main"):
     save_working_dir(branch=branch)
     copy_chapters_from_repo(update_chapters)
     if working_dir_clean():
-        print(green("Все разделы уже последней версии"))
+        print(green("All chapters are up to date"))
         return False
     else:
         working_dir_changed_diff(branch=branch)
@@ -310,8 +310,8 @@ def update_chapters_tasks_and_tests(update_chapters, branch="main"):
 
 def copy_chapters_from_repo(chapters_list):
     """
-    Функция клонирует репозиторий с последней версией заданий и копирует указанные
-    задания в текущий каталог.
+    The function clones the repository with the latest version of tasks and
+    copies the specified tasks to the current directory.
     """
     source_pth = str(pathlib.Path().absolute())
     clone_or_pull_task_repo()
@@ -320,13 +320,13 @@ def copy_chapters_from_repo(chapters_list):
     homedir = pathlib.Path.home()
     os.chdir(os.path.join(homedir, course_tasks_repo_dir, "exercises"))
     copy_chapters(source_pth, chapters_list)
-    print(green("\nОбновленные разделы скопированы"))
+    print(green("\nUpdated sections copied"))
     os.chdir(source_pth)
 
 
 def copy_chapters(source_pth, chapters_list):
     """
-    Функция копирует разделы
+    Function copies chapters
     """
     for chapter in chapters_list:
         to_path = os.path.join(source_pth, chapter)
