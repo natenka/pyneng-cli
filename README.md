@@ -5,7 +5,7 @@
 Установить модуль
 
 ```
-pip install pyneng-cli-course
+pip install pyneng-cli
 ```
 
 После этого проверка заданий вызывается через утилиту pyneng в CLI.
