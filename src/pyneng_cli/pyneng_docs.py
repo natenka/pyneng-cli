@@ -1,142 +1,132 @@
 DOCS = """
-## Где делать задания
+## Installation and launch
 
-Все задания по курсу находятся в каталоге exercises в вашем приватном
-репозитории.  Задания надо выполнять в подготовленных файлах.
+Install module
 
-Например, в разделе 04_data_structures есть задание 4.3. Чтобы выполнить его
-надо открыть файл exercises/04_data_structures/task_4_3.py и выполнять задание
-прямо в этом файле после описания задания.
+```
+pip install pyneng-cli
+```
 
+The task check is then invoked via the ``pyneng`` command in the CLI.
 
-## Скрипт pyneng
+## Stages of working with tasks
 
-[Установка и подготовка к работе с pyneng](/docs/pyneng-prepare/)
+1. Completing tasks
+2. Checking that the task is working as it should python task_4_2.py or running the script in the editor/IDE
+3. Checking tasks with pyneng 1-5
+4. If the tests pass, we look at the solutions pyneng 1-5 -a
 
-Этапы работы с заданиями:
+> The second step is very important because at this stage it is much easier to
+> find syntax errors and similar problems with the script than when running the
+> code through the test in stage 3.
 
-1. Выполнение заданий
-2. Проверка, что задание отрабатывает как нужно ``python task_4_2.py`` или запуск скрипта в редакторе/IDE
-3. Проверка заданий тестами ``pyneng 1-5``
-4. Если тесты проходят, смотрим варианты решения ``pyneng 1-5 -a``
+## Checking tasks with tests
 
+After completing the task, it can be checked using tests. To run the tests,
+you need to call pyneng in the tasks directory. For example, if you are doing
+chapter 4 tasks, you need to be in the exercises/04_data_structures/ directory
+and run pyneng in one of the ways, depending on which tasks to check.
 
-> Второй шаг очень важен, потому что на этом этапе намного проще найти ошибки в синтаксисе
-> и подобные проблемы с работой скрипта, чем при запуске кода через тест на 3 этапе.
-
-## Проверка заданий тестами
-
-После выполнения задания, его надо проверить с помощью тестов.
-Для запуска тестов, надо вызвать pyneng в каталоге заданий.
-Например, если вы делаете 4 раздел заданий, надо находиться в каталоге exercises/04_data_structures/
-и запустить pyneng одним из способов, в зависимости от того какие задания на проверять.
-
-[Примеры вывода тестов с пояснениями](/docs/pyneng-output/)
-
-Запуск проверки всех заданий текущего раздела:
+Run tests for all tasks in the current chapter:
 
 ```
 pyneng
 ```
 
-Запуск тестов для задания 4.1:
+Running tests for task 4.1:
 
 ```
 pyneng 1
 ```
 
-Запуск тестов для заданий 4.1, 4.2, 4.3:
+Running tests for tasks 4.1, 4.2, 4.3:
 
 ```
 pyneng 1-3
 ```
 
-Если есть задания с буквами, например, в 7 разделе, можно запускать так,
- чтобы запустить проверку для заданий 7.2a, 7.2b (надо находиться в каталоге 07_files):
+If there are tasks with letters, for example, in chapter 7, you can run it in
+such a way as to run a check for tasks 7.2a, 7.2b (must be called in the
+07_files directory):
 
 ```
 pyneng 2a-b
 ```
 
-или так, чтобы запустить все задания 7.2x с буквами и без:
+or so to run all 7.2x tasks with and without letters:
 
 ```
 pyneng 2*
 ```
 
 
-## Получение ответов
+## Getting answers to tasks
 
-Если задания проходят тесты, можно посмотреть варианты решения заданий.
+If the tasks pass the tests, you can see the answers (alternative solutions) of the tasks.
 
-Для этого к предыдущим вариантам команды надо добавить ``-a``.
-Такой вызов значит запустить тесты для заданий 1 и 2 и скопировать ответы, если тесты прошли:
+To do this, add ``-a`` to the previous command options. Such a call means to run
+tests for tasks 1 and 2 and copy the answers if the tests pass:
 
 ```
 pyneng 1-2 -a
 ```
 
-Тогда для указанных заданий запустятся тесты и для тех заданий из них,
-которые прошли тесты, скопируются ответы в файлы answer_task_x.py в текущем каталоге.
+Tests will run for the specified tasks, and for those tasks that pass the
+tests, the answers will be copied to the answer_task_x.py files in the current
+directory.
 
-Файлы ответов по умолчанию не добавляются на github.
-Файлы ответов можно:
+Answer files are not added to github by default. They can be:
 
-* удалять
-* добавлять на github ``pyneng 1-3 -c --all`` (``--all`` добавляет все файлы в текущем
-  каталоге и подкаталогах  ``git add .``, то есть добавит все файл)
-* добавить в ``.gitignore``, чтобы они были локально, но не светились в репозитории.
-  Для этого нужно добавить строку ``answer_task*`` в файл ``.gitignore``
+* deleted
+* added on github ``pyneng 1-3 -c --all`` (``--all`` adds all files in current directory and subdirectories git add . i.e. adds all file)
+* added to .gitignore so that they are saved locally, but not saved in the repository. To do this, add the line ``answer_task*`` to the .gitignore file
 
+It makes sense to add files to git if you write something in them. For example,
+comments for yourself on some difficult points.
 
-Добавлять файлы в git есть смысл, если в них что-то писать. Например, комментарии
-для себя по каким-то непонятным моментам.
-
-
-## Загрузить все изменения в текущем каталоге на github, без привязки к тому проходят ли тесты
+## Upload all changes in the current directory to github, regardless of whether the tests pass
 
 ```
 pyneng --save-all
 ```
 
-Выполняет команды
+Executes commands
+
 ```
 git add .
-git commit -m "Все изменения сохранены"
+git commit -m "All changes saved"
 git push origin main
 ```
 
-## Обновление разделов
+## Chapter update
 
-В pyneng есть два варианта обновления: обновлять разделами или конкретные
-задания/тесты.  При обновлении раздела, каталог раздела удаляется и копируется
-новая версия. Это подходит только для тех разделов, которые вы еще не начинали
-выполнять. Если надо обновить конкретное задание, лучше использовать обновление
-конкретных заданий (рассматривается дальше).
+Pyneng has two options for updating: updating by chapters or by specific
+tasks/tests. When a chapter is updated, the chapter's directory is deleted
+and the new version is copied. This is only suitable for chapters that you
+haven't started doing yet. If you need to update a specific task, it is better
+to use the update of specific tasks (discussed later).
 
-Перед любым вариантом обновления желательно сохранить все локальные изменения
-на github!
+Before any upgrade option, it is advisable to save all local changes to github!
 
-Для обновления разделов, надо перейти в каталог online-x-имя-фамилия/exercises/
-и дать команду:
+To update chapters, go to the your-repo/exercises/ directory and run the command:
 
 ```
 pyneng --update-chapters 12-25
 ```
 
-В этом случае обновятся разделы 12-25. Также можно указывать один раздел:
+In this case, chapters 12-25 will be updated. You can also specify one chapter:
 
 ```
 pyneng --update-chapters 11
 ```
 
-Или несколько через запятую
+Or several separated by commas
 
 ```
 pyneng --update-chapters 12,15,17
 ```
 
-## Обновление заданий и тестов
+## Update tasks and tests
 
 В заданиях и тестах встречаются неточности и чтобы их можно было исправить,
 pyneng добавлена опция ``--update``.
