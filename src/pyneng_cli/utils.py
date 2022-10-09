@@ -20,7 +20,6 @@ from pyneng_cli_course import (
     TASKS_URL,
     TASK_DIRS,
     DB_TASK_DIRS,
-    STUDENT_REPO_TEMPLATE,
 )
 
 
@@ -104,118 +103,6 @@ def save_changes_to_github(
         git_push(branch)
     else:
         call_command(f"git push origin {branch}")
-
-
-def get_repo(search_pattern=STUDENT_REPO_TEMPLATE):
-    git_remote = call_command("git remote -v", return_stdout=True)
-    repo_match = re.search(search_pattern, git_remote)
-    if repo_match:
-        repo = repo_match.group()
-        return repo
-    else:
-        raise PynengError(
-            red(
-                f"Не найден репозиторий {STUDENT_REPO_TEMPLATE}. "
-                f"pyneng надо вызывать в репозитории подготовленном для курса."
-            )
-        )
-
-
-def test_run_for_github_token():
-    """
-    Функция добавляет тестовое сообщение к последнему за 2 недели коммиту
-    """
-    message = "Проверка работы токена прошла успешно"
-    repo = get_repo()
-    last = post_comment_to_last_commit(message, repo)
-    commit_number = re.search(r'"(\w+)"', str(last)).group(1)
-    print(
-        green(
-            f"Комментарий можно посмотреть по ссылке "
-            f"https://github.com/pyneng/{repo}/commit/{commit_number}"
-        )
-    )
-
-
-def post_comment_to_last_commit(msg, repo, delta_days=60, ignore_ssl_cert=False):
-    """
-    Написать комментарий о сдаче заданий в последнем коммите.
-    Комментарий пишется через Github API.
-
-    Для работы функции должен быть настроен git.
-    Функция пытается определить имя пользователя git из вывода git config --list,
-    Если это не получается, запрашивает имя пользователя.
-
-    Пароль берется из переменной окружения GITHUB_PASS или запрашивается.
-    """
-    token = os.environ.get("GITHUB_TOKEN")
-    since = datetime.now() - timedelta(days=delta_days)
-    repo_name = f"pyneng/{repo}"
-    verify_ssl_cert = False if ignore_ssl_cert else True
-    try:
-        g = github.Github(token, verify=verify_ssl_cert)
-        repo_obj = g.get_repo(repo_name)
-    except github.GithubException:
-        raise PynengError(
-            red("Аутентификация по токену не прошла. Задание не сдано на проверку")
-        )
-    else:
-        commits = repo_obj.get_commits(since=since)
-
-        try:
-            last = commits[0]
-        except IndexError:
-            print(f"За указанный период времени {delta_days} дней не найдено коммитов")
-        else:
-            last.create_comment(msg)
-            return last
-
-
-def send_tasks_to_check(
-    passed_tasks, git_add_all=False, ignore_ssl_cert=False, branch="main"
-):
-    """
-    Функция отбирает все задания, которые прошли
-    тесты при вызове pyneng, делает git add для файлов заданий,
-    git commit с сообщением какие задания сделаны
-    и git push для добавления изменений на Github.
-    После этого к этому коммиту добавляется сообщение о том,
-    что задания сдаются на проверку с помощью функции post_comment_to_last_commit.
-    """
-    ok_tasks = [
-        re.sub(r".*(task_\d+_\w+.py)", r"\1", filename) for filename in passed_tasks
-    ]
-    tasks_num_only = sorted(
-        [task.replace("task_", "").replace(".py", "") for task in ok_tasks]
-    )
-    message = f"Сделаны задания {' '.join(tasks_num_only)}"
-
-    for task in ok_tasks:
-        call_command(f"git add {task}")
-        # добавление шаблонов для заданий jinja, textfsm
-        if "20" in task or "21" in task:
-            call_command("git add templates")
-        elif "25" in task:
-            call_command("git add .")
-    save_changes_to_github(message, git_add_all=git_add_all, branch=branch)
-
-    repo = get_repo()
-    last = post_comment_to_last_commit(message, repo, ignore_ssl_cert=ignore_ssl_cert)
-    commit_number = re.search(r'"(\w+)"', str(last)).group(1)
-    print(
-        green(
-            f"Задание успешно сдано на проверку. Комментарий о сдаче задания "
-            f"можно посмотреть по ссылке https://github.com/pyneng/{repo}/commit/{commit_number}"
-        )
-    )
-    hint = (
-        "Все задания раздела можно сдать командой:\n"
-        "[green on black]pyneng -c[/]\n\n"
-        "Не забудьте посмотреть варианты решения и комментарии в проверке.\n"
-        "Как посмотреть варианты решения:\n"
-        "[white on black]pyneng -a[/]"
-    )
-    rprint(Padding(hint, (1, 0, 1, 4)))
 
 
 def current_chapter_id():

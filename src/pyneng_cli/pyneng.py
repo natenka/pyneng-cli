@@ -23,7 +23,6 @@ from pyneng_cli_course.utils import (
     green,
     save_changes_to_github,
     test_run_for_github_token,
-    send_tasks_to_check,
     current_chapter_id,
     current_dir_name,
     parse_json_report,
@@ -167,18 +166,7 @@ def print_docs_with_pager(width=90):
         "флага, не выводится traceback для тестов."
     ),
 )
-@click.option(
-    "--check",
-    "-c",
-    is_flag=True,
-    help=(
-        "Сдать задания на проверку. "
-        "При добавлении этого флага, "
-        "не выводится traceback для тестов."
-    ),
-)
 @click.option("--docs", is_flag=True, help="Показать документацию pyneng")
-@click.option("--test-token", is_flag=True, help="Проверить работу токена")
 @click.option(
     "--save-all",
     "save_all_to_github",
@@ -213,10 +201,8 @@ def cli(
     tasks,
     disable_verbose,
     answer,
-    check,
     debug,
     default_branch,
-    test_token,
     git_add_all_to_github,
     ignore_ssl_cert,
     update_tasks_tests,
@@ -247,11 +233,6 @@ def cli(
         pyneng 1,3-5        запустить тесты для заданий 1, 3, 4, 5
         pyneng 1-5 -a       запустить тесты и записать ответы на задания,
                             которые прошли тесты, в файлы answer_task_x.py
-        pyneng 1-5 -c       запустить тесты и сдать на проверку задания,
-                            которые прошли тесты.
-        pyneng 1-5 -c --all запустить тесты и сдать на проверку задания,
-                            которые прошли тесты, но при этом загрузить на github все изменения
-                            в текущем каталоге
 
     \b
     Подробнее в документации: pyneng --docs
@@ -259,17 +240,9 @@ def cli(
     global DEFAULT_BRANCH
     if default_branch != "main":
         DEFAULT_BRANCH = default_branch
-    token_error = red(
-        "Для сдачи заданий на проверку надо сгенерировать токен github. "
-        "Подробнее в инструкции: https://pyneng.natenka.io/docs/pyneng-prepare/"
-    )
+
     if docs:
         print_docs_with_pager()
-        raise click.Abort()
-
-    if test_token:
-        test_run_for_github_token()
-        print(green("Проверка токена прошла успешно"))
         raise click.Abort()
 
     if save_all_to_github:
@@ -314,7 +287,7 @@ def cli(
     if disable_verbose:
         pytest_args = [*pytest_args_common, "--tb=short"]
     else:
-        pytest_args = [*pytest_args_common, "-vv", "--diff-width=120"]
+        pytest_args = [*pytest_args_common, "-vv"]
 
     # если добавлен флаг -a или -c нет смысла выводить traceback,
     # так как скорее всего задания уже проверены предыдущими запусками.
@@ -332,18 +305,6 @@ def cli(
         # скопировать ответы в файлы answer_task_x.py
         if answer:
             copy_answers(passed_tasks)
-
-        # сдать задания на проверку через github API
-        if check:
-            token = os.environ.get("GITHUB_TOKEN")
-            if not token:
-                raise PynengError(token_error)
-            send_tasks_to_check(
-                passed_tasks + tasks_without_tests,
-                git_add_all=git_add_all_to_github,
-                ignore_ssl_cert=ignore_ssl_cert,
-                branch=DEFAULT_BRANCH
-            )
 
     # если добавлен флаг --all, надо сохранить все изменения на github
     if git_add_all_to_github:
