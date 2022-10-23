@@ -14,8 +14,8 @@ import github
 from rich import print as rprint
 from rich.padding import Padding
 
-from pyneng_cli_course.exceptions import PynengError
-from pyneng_cli_course import (
+from pyneng_cli.exceptions import PynengError
+from pyneng_cliimport (
     ANSWERS_URL,
     TASKS_URL,
     TASK_DIRS,

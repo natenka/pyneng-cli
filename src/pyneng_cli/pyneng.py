@@ -16,9 +16,9 @@ from pyneng_cli_course import (
     DB_TASK_DIRS,
     TASK_NUMBER_DIR_MAP,
 )
-from pyneng_cli_course.exceptions import PynengError
-from pyneng_cli_course.pyneng_docs import DOCS
-from pyneng_cli_course.utils import (
+from pyneng_cli.exceptions import PynengError
+from pyneng_cli.pyneng_docs import DOCS
+from pyneng_cli.utils import (
     red,
     green,
     save_changes_to_github,
@@ -194,7 +194,7 @@ def print_docs_with_pager(width=90):
     help="Add git add .",
 )
 @click.option("--ignore-ssl-cert", default=False)
-@click.version_option(version="4.1.0")
+@click.version_option(version="4.2.0")
 def cli(
     tasks,
     disable_verbose,
@@ -210,7 +210,7 @@ def cli(
     docs,
 ):
     """
-    Run tests for TASKS tasks. By default, all tests will run.
+    PYNENG-CLI: Run tests for TASKS tasks. By default, all tests will run.
 
     \b
     These options do not run tests
