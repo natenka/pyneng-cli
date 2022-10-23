@@ -10,7 +10,7 @@ from rich.console import Console
 from rich.markdown import Markdown
 from pytest_jsonreport.plugin import JSONReport
 
-from pyneng_cli_course import (
+from pyneng_cli import (
     DEFAULT_BRANCH,
     TASK_DIRS,
     DB_TASK_DIRS,
@@ -22,7 +22,6 @@ from pyneng_cli.utils import (
     red,
     green,
     save_changes_to_github,
-    test_run_for_github_token,
     current_chapter_id,
     current_dir_name,
     parse_json_report,
@@ -194,7 +193,7 @@ def print_docs_with_pager(width=90):
     help="Add git add .",
 )
 @click.option("--ignore-ssl-cert", default=False)
-@click.version_option(version="4.2.0")
+@click.version_option(version="4.3.0")
 def cli(
     tasks,
     disable_verbose,
@@ -240,19 +239,19 @@ def cli(
 
     if docs:
         print_docs_with_pager()
-        raise click.Abort()
+        return
 
     if save_all_to_github:
         save_changes_to_github(branch=DEFAULT_BRANCH)
         print(green("All changes in the current directory are saved to GitHub"))
-        raise click.Abort()
+        return
 
     if update_chapters:
         check_current_dir_name(
             ["exercises"], "Chapters must be updated from the directory"
         )
         update_chapters_tasks_and_tests(update_chapters, branch=DEFAULT_BRANCH)
-        raise click.Abort()
+        return
 
     # it makes sense to perform further actions only if we are in the directory
     # of a specific task chapter
@@ -272,7 +271,7 @@ def cli(
         upd = update_tasks_and_tests(task_files, test_files, branch=DEFAULT_BRANCH)
         if upd:
             print(msg)
-        raise click.Abort()
+        return
 
     if not debug:
         sys.excepthook = exception_handler
@@ -287,7 +286,7 @@ def cli(
 
     # if the -a flag is added, it makes no sense to print traceback, since most
     # likely the tasks have already been checked by previous runs.
-    if answer or check:
+    if answer:
         pytest_args = [*pytest_args_common, "--tb=no"]
 
     # run pytest

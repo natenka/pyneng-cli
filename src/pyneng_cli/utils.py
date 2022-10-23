@@ -15,7 +15,7 @@ from rich import print as rprint
 from rich.padding import Padding
 
 from pyneng_cli.exceptions import PynengError
-from pyneng_cliimport (
+from pyneng_cli import (
     ANSWERS_URL,
     TASKS_URL,
     TASK_DIRS,
