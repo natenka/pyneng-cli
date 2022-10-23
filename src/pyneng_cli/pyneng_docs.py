@@ -128,91 +128,90 @@ pyneng --update-chapters 12,15,17
 
 ## Update tasks and tests
 
-В заданиях и тестах встречаются неточности и чтобы их можно было исправить,
-pyneng добавлена опция ``--update``.
+There are inaccuracies in tasks and tests, and so that they can be corrected,
+the ``--update`` option has been added to pyneng.
 
-Общая логика:
+General logic:
 
-* задания и тесты копируются из репозитория https://github.com/pyneng/pyneng-course-tasks
-* копируется весь файл задания, не только описание, поэтому файл перепишется
-* перед выполнением --update, лучше сохранить все изменения на github
+* tasks and tests are copied from the repository
+* the entire task file is copied, not just the description, so the file will be overwritten
+* before doing --update, it's better to save all changes on github
 
-Как работает --update
+How --update works
 
-* если в репозитории есть несохраненные изменения
-  * утилита предлагает их сохранить (сделает ``git add .``, ``git commit``, ``git push``)
-* если несохраненных изменений нет, копируются указанные задания и тесты
-* утилита предлагает сохранить изменения и показывает какие файлы изменены, но не какие именно сделаны изменения
-* можно отказаться сохранять изменения и посмотреть изменения git diff
+* if the repository has unsaved changes, pyneng offers to save them (does ``git add .``, ``git commit``, ``git push``)
+* if there are no unsaved changes, the specified tasks and tests are copied
+* the utility offers to save changes and shows which files have been changed, but not which changes have been made
+* you can refuse to save the changes and see the changes git diff
 
-#### Варианты вызова
 
-Обновить все задания и тесты раздела:
+#### Call Options
+
+Update all tasks and tests of the section:
 
 ```
 pyneng --update
 ```
 
-Обновить все тесты раздела (только тесты, не задания):
+Update all tests in a section (only tests, not tasks):
 
 ```
 pyneng --update --test-only
 ```
 
-Обновить задания 1,2 и соответствующие тесты раздела
+Update tasks 1,2 and related section tests
 
 ```
 pyneng 1,2 --update
 ```
 
-Если никаких обновлений нет, будет такой вывод
+If there are no updates, this will be the output
 
 ```
 $ pyneng --update
 #################### git pull
 Already up-to-date.
 
-
-Обновленные задания и тесты скопированы
-Задания и тесты уже последней версии
+Updated tasks and tests copied
+tasks and tests are already the latest version
 Aborted!
 ```
 
-В любой момент можно прервать обновление Ctrl-C.
+You can abort the update at any time with Ctrl-C.
 
-Пример вывода с несохраненными изменениями и наличием обновлений
+Sample output with unsaved changes and updates
 ```
 pyneng --update
-ОБНОВЛЕНИЕ ТЕСТОВ И ЗАДАНИЕ ПЕРЕЗАПИШЕТ СОДЕРЖИМОЕ НЕСОХРАНЕННЫХ ФАЙЛОВ!
-В текущем каталоге есть несохраненные изменения! Хотите их сохранить? [y/n]: y
-#################### git add .
-#################### git commit -m "Сохранение изменений перед обновлением заданий"
-[main 0e8c1cb] Сохранение изменений перед обновлением заданий
+THIS WILL OVERWRITE THE CONTENT OF UNSAVED FILES!
+There are unsaved changes in the current directory! Do you want to save them? [y/n]:y
+##################### git add .
+#################### git commit -m "Save changes before updating tasks"
+[main 0e8c1cb] Saving changes before updating tasks
  1 file changed, 1 insertion(+)
 
-#################### git push origin main
-To git@github.com:pyneng/online-14-natasha-samoylenko.git
-   fa338c3..0e8c1cb  main -> main
+##################### git push origin main
+To git@github.com:pyneng/my-tasks.git
+   fa338c3..0e8c1cb main -> main
 
-Все изменения в текущем каталоге сохранены. Начинаем обновление...
-#################### git pull
+All changes in the current directory are saved. Let's start updating...
+##################### git pull
 Already up-to-date.
 
 
-Обновленные задания и тесты скопированы
-Были обновлены такие файлы:
-#################### git diff --stat
- exercises/04_data_structures/task_4_0.py |  0
- exercises/04_data_structures/task_4_1.py |  1 -
- exercises/04_data_structures/task_4_3.py |  3 ---
+Updated tasks and tests copied
+The following files have been updated:
+##################### git diff --stat
+ exercises/04_data_structures/task_4_0.py | 0
+ exercises/04_data_structures/task_4_1.py | one -
+ exercises/04_data_structures/task_4_3.py | 3---
  3 files changed, 0 insertions(+), 4 deletions(-)
 
 
-Это короткий diff, если вы хотите посмотреть все отличия подробно, нажмите n и дайте команду git diff.
-Также при желании можно отменить внесенные изменения git checkout -- file (или git restore file).
+This is a short diff, if you want to see all the differences in detail, press n and issue the git diff command.
+You can also undo your changes with git checkout -- file (or git restore file) if you want.
 
-Сохранить изменения и добавить на github? [y/n]: n
-Задания и тесты успешно обновлены
+Save changes and add to github? [y/n]:n
+tasks and tests have been successfully updated
 Aborted!
 ```
 """

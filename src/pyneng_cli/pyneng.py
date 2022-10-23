@@ -79,8 +79,8 @@ def _get_tasks_tests_from_cli(self, value):
         else:
             self.fail(
                 red(
-                    f"Данный формат не поддерживается {task}. "
-                    "Допустимые форматы в pyneng --help"
+                    f"This format is not supported {task}. "
+                    "Acceptable formats are listed in pyneng --help"
                 )
             )
     tasks_with_tests = set([test.replace("test_", "") for test in test_files])
