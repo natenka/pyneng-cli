@@ -4,7 +4,7 @@ ANSWERS_URL = "https://github.com/natenka/pyneng-tasks-solutions"
 # needed for tasks/tests updates
 TASKS_URL = "https://github.com/pyneng/pyneng-course-tasks"
 LANG_TASKS_URL = {
-    "uk": "https://github.com/natenka/pyneng-tasks-uk",
+    "uk": "https://github.com/natenka/pynenguk-tasks",
     "en": "https://github.com/natenka/pyneng-examples-exercises-en",
     "ru": "https://github.com/natenka/pyneng-examples-exercises",
 }
