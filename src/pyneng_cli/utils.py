@@ -17,9 +17,12 @@ from rich.padding import Padding
 from pyneng_cli.exceptions import PynengError
 from pyneng_cli import (
     ANSWERS_URL,
-    TASKS_URL,
     TASK_DIRS,
     DB_TASK_DIRS,
+    TASKS_URL,
+    TASKS_LOCAL_REPO,
+    LANG_TASKS_URL,
+    LANG_TASKS_LOCAL_REPO,
 )
 
 
@@ -286,7 +289,15 @@ def working_dir_changed_diff(branch="main"):
         save_changes_to_github("Updating tasks", branch=branch)
 
 
-def update_tasks_and_tests(tasks_list, tests_list, branch="main"):
+def change_tasks_lang(lang):
+    global TASKS_URL
+    global TASKS_LOCAL_REPO
+    TASKS_URL = LANG_TASKS_URL.get(lang)
+    TASKS_LOCAL_REPO = LANG_TASKS_LOCAL_REPO.get(lang)
+
+
+def update_tasks_and_tests(tasks_list, tests_list, lang, branch="main"):
+    change_tasks_lang(lang)
     save_working_dir(branch=branch)
     copy_tasks_tests_from_repo(tasks_list, tests_list)
     if working_dir_clean():
@@ -297,7 +308,8 @@ def update_tasks_and_tests(tasks_list, tests_list, branch="main"):
         return True
 
 
-def update_chapters_tasks_and_tests(update_chapters, branch="main"):
+def update_chapters_tasks_and_tests(update_chapters, lang, branch="main"):
+    change_tasks_lang(lang)
     save_working_dir(branch=branch)
     copy_chapters_from_repo(update_chapters)
     if working_dir_clean():

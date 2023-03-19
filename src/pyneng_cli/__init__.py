@@ -2,11 +2,17 @@ __version__ = "4.3.0"
 
 ANSWERS_URL = "https://github.com/natenka/pyneng-tasks-solutions"
 # needed for tasks/tests updates
-TASKS_URL = "https://github.com/pyneng/pyneng-course-tasks"
+TASKS_URL = "https://github.com/natenka/pynenguk-tasks"
+TASKS_LOCAL_REPO = ".pynenguk-tasks"
 LANG_TASKS_URL = {
     "uk": "https://github.com/natenka/pynenguk-tasks",
     "en": "https://github.com/natenka/pyneng-examples-exercises-en",
-    "ru": "https://github.com/natenka/pyneng-examples-exercises",
+    "ru": "https://github.com/pyneng/pyneng-course-tasks",
+}
+LANG_TASKS_LOCAL_REPO = {
+    "uk": ".pynenguk-tasks",
+    "en": ".pyneng-examples-exercises-en",
+    "ru": ".pyneng-course-tasks",
 }
 DEFAULT_BRANCH = "main"
 TASK_DIRS = [

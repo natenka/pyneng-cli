@@ -247,10 +247,16 @@ def cli(
         return
 
     if update_chapters:
+        LANG = click.prompt(
+            "Please select a language from the following",
+            type=click.Choice(["uk", "en", "ru"]),
+        )
         check_current_dir_name(
             ["exercises"], "Chapters must be updated from the directory"
         )
-        update_chapters_tasks_and_tests(update_chapters, branch=DEFAULT_BRANCH)
+        update_chapters_tasks_and_tests(
+            update_chapters, branch=DEFAULT_BRANCH, lang=LANG
+        )
         return
 
     # it makes sense to perform further actions only if we are in the directory
@@ -262,13 +268,19 @@ def cli(
     test_files, tasks_without_tests, task_files = tasks
 
     if update_tasks_tests:
+        LANG = click.prompt(
+            "Please select a language from the following",
+            type=click.Choice(["uk", "en", "ru"]),
+        )
         if update_tests_only:
             tasks_files = None
             msg = green("Tests updated successfully")
         else:
             msg = green("Tasks and tests updated successfully")
 
-        upd = update_tasks_and_tests(task_files, test_files, branch=DEFAULT_BRANCH)
+        upd = update_tasks_and_tests(
+            task_files, test_files, branch=DEFAULT_BRANCH, lang=LANG
+        )
         if upd:
             print(msg)
         return
