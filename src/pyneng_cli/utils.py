@@ -204,16 +204,15 @@ def copy_answer_files(passed_tasks, pth):
 
 
 def clone_or_pull_task_repo():
-    course_tasks_repo_dir = ".pyneng-course-tasks"
     source_pth = str(pathlib.Path().absolute())
     homedir = pathlib.Path.home()
     os.chdir(homedir)
-    if os.path.exists(course_tasks_repo_dir):
-        os.chdir(course_tasks_repo_dir)
+    if os.path.exists(TASKS_LOCAL_REPO):
+        os.chdir(TASKS_LOCAL_REPO)
         call_command("git pull")
         os.chdir(homedir)
     else:
-        git_clone_repo(TASKS_URL, course_tasks_repo_dir)
+        git_clone_repo(TASKS_URL, TASKS_LOCAL_REPO)
     os.chdir(source_pth)
 
 
@@ -228,10 +227,9 @@ def copy_tasks_tests_from_repo(tasks, tests):
 
     clone_or_pull_task_repo()
 
-    course_tasks_repo_dir = ".pyneng-course-tasks"
     homedir = pathlib.Path.home()
     os.chdir(
-        os.path.join(homedir, course_tasks_repo_dir, "exercises", current_chapter_name)
+        os.path.join(homedir, TASKS_LOCAL_REPO, "exercises", current_chapter_name)
     )
     copy_task_test_files(source_pth, tasks, tests)
     print(green("\nUpdated tasks and tests copied"))
@@ -328,9 +326,8 @@ def copy_chapters_from_repo(chapters_list):
     source_pth = str(pathlib.Path().absolute())
     clone_or_pull_task_repo()
 
-    course_tasks_repo_dir = ".pyneng-course-tasks"
     homedir = pathlib.Path.home()
-    os.chdir(os.path.join(homedir, course_tasks_repo_dir, "exercises"))
+    os.chdir(os.path.join(homedir, TASKS_LOCAL_REPO, "exercises"))
     copy_chapters(source_pth, chapters_list)
     print(green("\nUpdated sections copied"))
     os.chdir(source_pth)
