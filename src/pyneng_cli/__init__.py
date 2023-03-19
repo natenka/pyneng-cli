@@ -1,4 +1,4 @@
-__version__ = "4.3.0"
+__version__ = "5.0.0"
 
 ANSWERS_URL = "https://github.com/natenka/pyneng-tasks-solutions"
 # needed for tasks/tests updates

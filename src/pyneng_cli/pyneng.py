@@ -193,7 +193,7 @@ def print_docs_with_pager(width=90):
     help="Add git add .",
 )
 @click.option("--ignore-ssl-cert", default=False)
-@click.version_option(version="4.3.0")
+@click.version_option(version="5.0.0")
 def cli(
     tasks,
     disable_verbose,
