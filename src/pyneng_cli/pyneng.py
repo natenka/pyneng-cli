@@ -273,7 +273,7 @@ def cli(
             type=click.Choice(["uk", "en", "ru"]),
         )
         if update_tests_only:
-            tasks_files = None
+            task_files = None
             msg = green("Tests updated successfully")
         else:
             msg = green("Tasks and tests updated successfully")
